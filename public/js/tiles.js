@@ -40,19 +40,22 @@ const TILE_TYPES = [
 ];
 
 /**
- * 레벨별 보드 설정
+ * 레벨별 보드 설정 (하드 모드)
+ * - 시간 제한 대폭 감소
+ * - 타일 종류 증가 (찾기 어려움)
+ * - 보드 크기 증가
  */
 const LEVEL_CONFIG = {
-  1: { cols: 6, rows: 4, tileTypes: 8, timeLimit: 90 },
-  2: { cols: 6, rows: 5, tileTypes: 10, timeLimit: 100 },
-  3: { cols: 7, rows: 5, tileTypes: 12, timeLimit: 110 },
-  4: { cols: 7, rows: 6, tileTypes: 14, timeLimit: 120 },
-  5: { cols: 8, rows: 6, tileTypes: 16, timeLimit: 130 },
-  6: { cols: 8, rows: 7, tileTypes: 18, timeLimit: 140 },
-  7: { cols: 9, rows: 7, tileTypes: 20, timeLimit: 150 },
-  8: { cols: 9, rows: 8, tileTypes: 22, timeLimit: 160 },
-  9: { cols: 10, rows: 8, tileTypes: 24, timeLimit: 170 },
-  10: { cols: 10, rows: 9, tileTypes: 26, timeLimit: 180 }
+  1: { cols: 6, rows: 4, tileTypes: 10, timeLimit: 45 },
+  2: { cols: 6, rows: 5, tileTypes: 12, timeLimit: 50 },
+  3: { cols: 7, rows: 5, tileTypes: 14, timeLimit: 55 },
+  4: { cols: 7, rows: 6, tileTypes: 16, timeLimit: 60 },
+  5: { cols: 8, rows: 6, tileTypes: 18, timeLimit: 65 },
+  6: { cols: 8, rows: 7, tileTypes: 20, timeLimit: 70 },
+  7: { cols: 9, rows: 7, tileTypes: 22, timeLimit: 75 },
+  8: { cols: 9, rows: 8, tileTypes: 24, timeLimit: 80 },
+  9: { cols: 10, rows: 8, tileTypes: 26, timeLimit: 85 },
+  10: { cols: 10, rows: 9, tileTypes: 28, timeLimit: 90 }
 };
 
 /**
@@ -63,9 +66,9 @@ function getLevelConfig(level) {
   const maxLevel = Math.min(level, 10);
   const config = { ...LEVEL_CONFIG[maxLevel] };
 
-  // 레벨 10 이상: 시간이 점점 줄어듦 (최소 60초)
+  // 레벨 10 이상: 시간이 급격히 줄어듦 (최소 30초)
   if (level > 10) {
-    config.timeLimit = Math.max(60, 180 - (level - 10) * 10);
+    config.timeLimit = Math.max(30, 90 - (level - 10) * 5);
   }
 
   return config;

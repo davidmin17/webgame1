@@ -16,8 +16,8 @@ class FruitMatchGame {
     this.timeLeft = 0;
     this.timeLimit = 0;
     this.selectedTile = null;
-    this.hints = 3;
-    this.shuffles = 2;
+    this.hints = 2;      // 힌트 감소: 3 → 2
+    this.shuffles = 1;   // 셔플 감소: 2 → 1
     this.combo = 0;
     this.comboTimer = null;
     this.isPaused = false;
@@ -59,9 +59,9 @@ class FruitMatchGame {
       col: index % cols
     }));
 
-    // 힌트와 셔플 레벨에 따라 조정
-    this.hints = Math.max(1, 4 - Math.floor(level / 3));
-    this.shuffles = Math.max(1, 3 - Math.floor(level / 4));
+    // 힌트와 셔플 레벨에 따라 조정 (더 빡빡하게)
+    this.hints = Math.max(0, 3 - Math.floor(level / 2));    // 레벨 6부터 힌트 0
+    this.shuffles = Math.max(0, 2 - Math.floor(level / 3)); // 레벨 6부터 셔플 0
 
     this.startTimer();
   }
@@ -166,14 +166,14 @@ class FruitMatchGame {
     this.selectedTile = null;
     this.matchedCount++;
 
-    // 콤보 처리
+    // 콤보 처리 (콤보 유지 시간 단축: 2초 → 1.2초)
     this.combo++;
     if (this.comboTimer) {
       clearTimeout(this.comboTimer);
     }
     this.comboTimer = setTimeout(() => {
       this.combo = 0;
-    }, 2000);
+    }, 1200);
 
     // 점수 계산
     const baseScore = 100;
