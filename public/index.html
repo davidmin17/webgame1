@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🍎 과일 매칭 퍼즐</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <!-- 시작 화면 -->
+    <div id="start-screen" class="screen active">
+      <div class="container">
+        <h1 class="game-title">
+          <span class="icon">🍎</span>
+          <span class="title-text">FRUIT MATCH</span>
+        </h1>
+        <p class="subtitle">과일 매칭 퍼즐</p>
+
+        <div class="input-group">
+          <input type="text" id="nickname-input" placeholder="닉네임을 입력하세요" maxlength="20" autocomplete="off">
+          <button id="start-btn" class="btn btn-primary">게임 시작</button>
+        </div>
+
+        <button id="show-ranking-btn" class="btn btn-secondary">🏆 랭킹 보기</button>
+      </div>
+    </div>
+
+    <!-- 게임 화면 -->
+    <div id="game-screen" class="screen">
+      <div class="game-header">
+        <div class="header-item">
+          <span class="label">플레이어</span>
+          <span id="player-name" class="value">-</span>
+        </div>
+        <div class="header-item">
+          <span class="label">레벨</span>
+          <span id="current-level" class="value">1</span>
+        </div>
+        <div class="header-item time-display">
+          <span class="label">남은 시간</span>
+          <span id="time-left" class="value">60</span>
+        </div>
+        <div class="header-item">
+          <span class="label">점수</span>
+          <span id="current-score" class="value">0</span>
+        </div>
+      </div>
+
+      <div id="game-board"></div>
+
+      <div class="game-footer">
+        <button id="hint-btn" class="btn btn-hint">💡 힌트 (<span id="hint-count">3</span>)</button>
+        <button id="shuffle-btn" class="btn btn-shuffle">🔀 섞기 (<span id="shuffle-count">2</span>)</button>
+        <button id="pause-btn" class="btn btn-pause">⏸️ 일시정지</button>
+      </div>
+    </div>
+
+    <!-- 일시정지 화면 -->
+    <div id="pause-screen" class="screen overlay">
+      <div class="modal">
+        <h2>⏸️ 일시정지</h2>
+        <button id="resume-btn" class="btn btn-primary">계속하기</button>
+        <button id="quit-btn" class="btn btn-secondary">게임 종료</button>
+      </div>
+    </div>
+
+    <!-- 레벨 클리어 화면 -->
+    <div id="level-clear-screen" class="screen overlay">
+      <div class="modal">
+        <h2>🎉 레벨 클리어!</h2>
+        <p class="level-info">레벨 <span id="cleared-level">1</span> 완료</p>
+        <p class="bonus-info">시간 보너스: +<span id="time-bonus">0</span>점</p>
+        <button id="next-level-btn" class="btn btn-primary">다음 레벨</button>
+      </div>
+    </div>
+
+    <!-- 게임 오버 화면 -->
+    <div id="gameover-screen" class="screen overlay">
+      <div class="modal gameover-modal">
+        <h2>⏰ 게임 오버</h2>
+        <div class="final-stats">
+          <div class="stat">
+            <span class="stat-label">최종 점수</span>
+            <span id="final-score" class="stat-value">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">도달 레벨</span>
+            <span id="final-level" class="stat-value">1</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">순위</span>
+            <span id="final-rank" class="stat-value">-</span>
+          </div>
+        </div>
+        <button id="retry-btn" class="btn btn-primary">다시 하기</button>
+        <button id="home-btn" class="btn btn-secondary">홈으로</button>
+      </div>
+    </div>
+
+    <!-- 랭킹 화면 -->
+    <div id="ranking-screen" class="screen overlay">
+      <div class="modal ranking-modal">
+        <h2>🏆 랭킹</h2>
+        <div id="ranking-list" class="ranking-list">
+          <div class="loading">로딩 중...</div>
+        </div>
+        <button id="close-ranking-btn" class="btn btn-secondary">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/tiles.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+
