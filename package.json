@@ -7,12 +7,13 @@
     "start": "node server/index.js",
     "dev": "node --watch server/index.js"
   },
-  "keywords": ["game", "mahjong", "matching", "puzzle"],
+  "keywords": ["game", "fruit", "matching", "puzzle"],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "@upstash/redis": "^1.28.0"
   }
 }
 
