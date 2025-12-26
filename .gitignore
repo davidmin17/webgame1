@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 
+# Data (랭킹 데이터는 유지하되 필요시 제외 가능)
+# data/
+
 # Environment
 .env
 .env.local

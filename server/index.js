@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,19 +15,60 @@ if (process.env.VERCEL !== '1') {
   app.use(express.static(path.join(__dirname, '../public')));
 }
 
-// In-memory 데이터 저장소
-const gameData = {
-  rankings: [],
-  maxRankings: 100 // 상위 100명만 저장
-};
+// ============================================
+// 파일 기반 데이터 저장소
+// ============================================
 
+const DATA_DIR = path.join(__dirname, '../data');
+const RANKINGS_FILE = path.join(DATA_DIR, 'rankings.json');
+const MAX_RANKINGS = 100;
+
+// 데이터 디렉토리 생성
+function ensureDataDir() {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  }
+}
+
+// 랭킹 데이터 로드
+function loadRankings() {
+  try {
+    ensureDataDir();
+    if (fs.existsSync(RANKINGS_FILE)) {
+      const data = fs.readFileSync(RANKINGS_FILE, 'utf8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error('랭킹 데이터 로드 실패:', error.message);
+  }
+  return [];
+}
+
+// 랭킹 데이터 저장
+function saveRankings(rankings) {
+  try {
+    ensureDataDir();
+    fs.writeFileSync(RANKINGS_FILE, JSON.stringify(rankings, null, 2), 'utf8');
+    return true;
+  } catch (error) {
+    console.error('랭킹 데이터 저장 실패:', error.message);
+    return false;
+  }
+}
+
+// 서버 시작 시 랭킹 데이터 로드
+let rankings = loadRankings();
+console.log(`📊 랭킹 데이터 로드 완료: ${rankings.length}개 기록`);
+
+// ============================================
 // API Routes
+// ============================================
 
 // 랭킹 조회
 app.get('/api/rankings', (req, res) => {
   res.json({
     success: true,
-    rankings: gameData.rankings
+    rankings: rankings
   });
 });
 
@@ -51,29 +93,34 @@ app.post('/api/score', (req, res) => {
   };
 
   // 랭킹에 추가
-  gameData.rankings.push(entry);
+  rankings.push(entry);
 
   // 점수 기준 내림차순 정렬
-  gameData.rankings.sort((a, b) => b.score - a.score);
+  rankings.sort((a, b) => b.score - a.score);
 
   // 상위 N명만 유지
-  if (gameData.rankings.length > gameData.maxRankings) {
-    gameData.rankings = gameData.rankings.slice(0, gameData.maxRankings);
+  if (rankings.length > MAX_RANKINGS) {
+    rankings = rankings.slice(0, MAX_RANKINGS);
   }
 
+  // 파일에 저장
+  const saved = saveRankings(rankings);
+
   // 현재 순위 계산
-  const rank = gameData.rankings.findIndex(r => r.id === entry.id) + 1;
+  const rank = rankings.findIndex(r => r.id === entry.id) + 1;
 
   res.json({
     success: true,
     rank: rank > 0 ? rank : null,
-    entry
+    entry,
+    saved
   });
 });
 
 // 랭킹 초기화 (관리용)
 app.delete('/api/rankings', (req, res) => {
-  gameData.rankings = [];
+  rankings = [];
+  saveRankings(rankings);
   res.json({
     success: true,
     message: '랭킹이 초기화되었습니다.'
@@ -97,4 +144,3 @@ if (process.env.VERCEL !== '1') {
 
 // Vercel 서버리스 함수용 export
 module.exports = app;
-
