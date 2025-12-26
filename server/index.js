@@ -131,9 +131,12 @@ app.get('/api/rankings', async (req, res) => {
 // 점수 등록
 app.post('/api/score', async (req, res) => {
   try {
+    console.log('[Server] 점수 등록 요청:', req.body);
+
     const { nickname, score, level, time } = req.body;
 
     if (!nickname || typeof score !== 'number') {
+      console.log('[Server] 유효성 검사 실패:', { nickname, score, scoreType: typeof score });
       return res.status(400).json({
         success: false,
         message: '닉네임과 점수는 필수입니다.'
@@ -149,8 +152,11 @@ app.post('/api/score', async (req, res) => {
       createdAt: new Date().toISOString()
     };
 
+    console.log('[Server] 새 엔트리 생성:', entry);
+
     // 현재 랭킹 조회
     let rankings = await getRankings();
+    console.log('[Server] 현재 랭킹 수:', rankings.length);
 
     // 랭킹에 추가
     rankings.push(entry);
@@ -165,6 +171,7 @@ app.post('/api/score', async (req, res) => {
 
     // 저장
     const saved = await saveRankings(rankings);
+    console.log('[Server] 저장 결과:', saved);
 
     // 현재 순위 계산
     const rank = rankings.findIndex(r => r.id === entry.id) + 1;
@@ -176,10 +183,11 @@ app.post('/api/score', async (req, res) => {
       saved
     });
   } catch (error) {
-    console.error('점수 등록 실패:', error);
+    console.error('[Server] 점수 등록 실패:', error);
     res.status(500).json({
       success: false,
-      message: '점수 등록 실패'
+      message: '점수 등록 실패',
+      error: error.message
     });
   }
 });

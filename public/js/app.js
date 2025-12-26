@@ -432,13 +432,22 @@ class App {
    * 게임 오버 처리
    */
   async handleGameOver(data) {
-    // 점수 등록
-    const result = await API.submitScore(
-      this.nickname,
-      data.score,
-      data.level,
-      data.time
-    );
+    console.log('[App] 게임 오버:', data);
+
+    // 점수가 0보다 클 때만 등록
+    let result = { success: false, rank: null };
+
+    if (data.score > 0) {
+      result = await API.submitScore(
+        this.nickname,
+        data.score,
+        data.level,
+        data.time
+      );
+      console.log('[App] 점수 등록 결과:', result);
+    } else {
+      console.log('[App] 점수가 0이므로 등록 스킵');
+    }
 
     // 게임오버 화면 표시
     this.finalScore.textContent = data.score.toLocaleString();

@@ -10,11 +10,13 @@ const API = {
    */
   async getRankings() {
     try {
+      console.log('[API] 랭킹 조회 요청');
       const response = await fetch(`${this.baseUrl}/api/rankings`);
       const data = await response.json();
+      console.log('[API] 랭킹 조회 결과:', data);
       return data;
     } catch (error) {
-      console.error('랭킹 조회 실패:', error);
+      console.error('[API] 랭킹 조회 실패:', error);
       return { success: false, rankings: [] };
     }
   },
@@ -24,6 +26,8 @@ const API = {
    */
   async submitScore(nickname, score, level, time) {
     try {
+      console.log('[API] 점수 등록 요청:', { nickname, score, level, time });
+
       const response = await fetch(`${this.baseUrl}/api/score`, {
         method: 'POST',
         headers: {
@@ -31,11 +35,17 @@ const API = {
         },
         body: JSON.stringify({ nickname, score, level, time })
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
+      console.log('[API] 점수 등록 결과:', data);
       return data;
     } catch (error) {
-      console.error('점수 등록 실패:', error);
-      return { success: false };
+      console.error('[API] 점수 등록 실패:', error);
+      return { success: false, error: error.message };
     }
   }
 };
